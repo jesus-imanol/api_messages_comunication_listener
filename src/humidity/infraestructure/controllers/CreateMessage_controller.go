@@ -1,11 +1,13 @@
 package controllers
 
 import (
-	"apimessages/src/message/application"
-	"apimessages/src/message/domain/entities"
+	"apimessages/src/humidity/application"
+	"apimessages/src/humidity/domain/entities"
+	"fmt"
+
+	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type CreateMessageController struct {
@@ -17,16 +19,17 @@ func NewCreateMessageController(createMessageUsecase *application.CreateMessageU
 	}
 }
 func (cm *CreateMessageController) CreateMessage(g *gin.Context) {
-	var message entities.Message
-	if err := g.ShouldBindJSON(&message); err != nil {
+	var humidity entities.Humidity
+	if err := g.ShouldBindJSON(&humidity); err != nil {
         g.JSON(http.StatusNotAcceptable, gin.H{"error": err.Error()})
         return
     }
-	messagetoCreate,err := cm.createMessageUsecase.Execute(message.Type, message.Quantity, message.Text)
+	messagetoCreate,err := cm.createMessageUsecase.Execute(humidity)
 	if err != nil {
 		g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println(messagetoCreate)
 	g.JSON(http.StatusCreated, messagetoCreate)
 
 }

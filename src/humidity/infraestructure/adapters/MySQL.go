@@ -2,7 +2,7 @@ package adapters
 
 import (
 	"apimessages/src/core"
-	"apimessages/src/message/domain/entities"
+	"apimessages/src/humidity/domain/entities"
 	"log"
 	"fmt"
 
@@ -20,12 +20,12 @@ func NewMySQL() (*MySQL, error) {
 	return &MySQL{conn: conn}, nil
 }
 
-func (mysql *MySQL) CreateMessage(message  *entities.Message) error {
-	query:= `INSERT INTO messages (type, quantity, text) VALUES (?, ?, ?)`
-	result, err := mysql.conn.ExecutePreparedQuery(query, message.Type, message.Quantity, message.Text)
+func (mysql *MySQL) CreateMessage(humidity entities.Humidity) (*entities.Humidity, error) {
+	query := `INSERT INTO messages (type, quantity, text) VALUES (?, ?, ?)`
+	result, err := mysql.conn.ExecutePreparedQuery(query, humidity.Type, humidity.Quantity, humidity.Text)
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return nil, err
 	}
 
 	if result != nil {
@@ -35,16 +35,14 @@ func (mysql *MySQL) CreateMessage(message  *entities.Message) error {
 			lastInsertID, err := result.LastInsertId()
 			if err != nil {
 				fmt.Println(err)
-				return err
+				return nil, err
 			}
-			message.ID = int64(lastInsertID)
+		humidity.ID = lastInsertID
 		} else {
 			log.Printf("[MySQL] - Ninguna fila fue afectada.")
 		}
 	} else {
 		log.Printf("[MySQL] - Resultado de la consulta es nil.")
 	}
-	return nil
-
-
+	return &humidity, nil 
 }
