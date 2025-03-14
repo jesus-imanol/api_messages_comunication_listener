@@ -58,7 +58,7 @@ func (ws *WebSocketAdapter) Broadcast(humidity entities.Humidity) {
 	if err != nil {
 		log.Println("Error al convertir el mensaje a JSON:", err)
 		return
-	}
+	}	
 
 	for conn := range ws.clients {
 		err := conn.WriteMessage(websocket.TextMessage, messageData)
