@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"apimessages/src/humidity/application"
-	"apimessages/src/humidity/domain/entities"
+	"apimessages/src/messages/application"
+	"apimessages/src/messages/domain/entities"
 	"fmt"
 
 	"net/http"
@@ -19,7 +19,7 @@ func NewCreateMessageController(createMessageUsecase *application.CreateMessageU
 	}
 }
 func (cm *CreateMessageController) CreateMessage(g *gin.Context) {
-	var humidity entities.Humidity
+	var humidity entities.Message
 	if err := g.ShouldBindJSON(&humidity); err != nil {
         g.JSON(http.StatusNotAcceptable, gin.H{"error": err.Error()})
         return

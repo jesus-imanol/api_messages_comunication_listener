@@ -2,10 +2,9 @@ package adapters
 
 import (
 	"apimessages/src/core"
-	"apimessages/src/humidity/domain/entities"
-	"log"
+	"apimessages/src/messages/domain/entities"
 	"fmt"
-
+	"log"
 )
 
 type MySQL struct {
@@ -20,7 +19,7 @@ func NewMySQL() (*MySQL, error) {
 	return &MySQL{conn: conn}, nil
 }
 
-func (mysql *MySQL) CreateMessage(humidity entities.Humidity) (*entities.Humidity, error) {
+func (mysql *MySQL) CreateMessage(humidity entities.Message) (*entities.Message, error) {
 	query := `INSERT INTO messages (type, quantity, text) VALUES (?, ?, ?)`
 	result, err := mysql.conn.ExecutePreparedQuery(query, humidity.Type, humidity.Quantity, humidity.Text)
 	if err != nil {

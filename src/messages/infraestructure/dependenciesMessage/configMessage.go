@@ -1,10 +1,11 @@
-package dependenciesmessage
+package dependenciesMessage
 
 import (
-	"apimessages/src/humidity/application"
-	"apimessages/src/humidity/infraestructure/adapters"
-	"apimessages/src/humidity/infraestructure/controllers"
-	"apimessages/src/humidity/infraestructure/routers"
+	"apimessages/src/messages/application"
+	"apimessages/src/messages/infraestructure/adapters"
+	"apimessages/src/messages/infraestructure/controllers"
+	"apimessages/src/messages/infraestructure/routers"
+
 	"github.com/gin-gonic/gin"
 )
 

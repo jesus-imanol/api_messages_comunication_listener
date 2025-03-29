@@ -1,8 +1,8 @@
 package main
 
 import (
-	"apimessages/src/humidity/infraestructure/adapters"
-	dependenciesmessage "apimessages/src/humidity/infraestructure/dependenciesMessage"
+	"apimessages/src/messages/infraestructure/adapters"
+	dependenciesMessage "apimessages/src/messages/infraestructure/dependenciesMessage"
 	"log"
 	"time"
 
@@ -34,7 +34,7 @@ func main() {
 
     webSocketAdapter := adapters.NewWebSocketAdapter()
 
-    dependenciesmessage.InitMessages(r, webSocketAdapter, mysqlAdapter)
+    dependenciesMessage.InitMessages(r, webSocketAdapter, mysqlAdapter)
 
     if err := r.Run(":4000"); err != nil {
         panic(err)
