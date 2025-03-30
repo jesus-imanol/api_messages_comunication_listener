@@ -45,3 +45,25 @@ func (mysql *MySQL) CreateMessage(humidity entities.Message) (*entities.Message,
 	}
 	return &humidity, nil 
 }
+
+func (mysql *MySQL) GetGmailByUserName(userName string) (string, error){
+	query := `SELECT gmail FROM user WHERE username =?`
+    rows, err := mysql.conn.FetchRows(query, userName)
+    if err != nil {
+        return "", fmt.Errorf("error al ejecutar la consulta SELECT: %v", err)
+    }
+
+    var gmail string
+    for rows.Next() {
+        err := rows.Scan(&gmail)
+        if err != nil {
+            return "", fmt.Errorf("error al leer el resultado de la consulta: %v", err)
+        }
+    }
+
+    if gmail == "" {
+        return "", fmt.Errorf("usuario %s no encontrado", userName)
+    }
+
+    return gmail, nil
+}

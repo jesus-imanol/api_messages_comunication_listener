@@ -11,7 +11,7 @@ import (
 )
 
 type WebSocketAdapter struct {
-    clients map[*websocket.Conn]string // Mapear conexiones con IDs de usuario
+    clients map[*websocket.Conn]string 
     mu      sync.Mutex
 }
 

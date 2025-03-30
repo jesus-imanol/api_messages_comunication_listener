@@ -6,4 +6,5 @@ type Message struct {
 	Quantity float64 `json:"quantity"`
 	Text string `json:"text"`
 	User string `json:"username"`
+	CreatedAt string `json:"created_at"`
 }
