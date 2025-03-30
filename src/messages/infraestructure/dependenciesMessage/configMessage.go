@@ -9,10 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitMessages(r *gin.Engine, webSocketAdapter *adapters.WebSocketAdapter , conecctionMysql *adapters.MySQL) {
-	//init repository
-	createMessageUseCase := application.NewCreateMessageUsecase(conecctionMysql, webSocketAdapter)
+func InitMessages(r *gin.Engine, webSocketAdapter *adapters.WebSocketAdapter, conecctionMysql *adapters.MySQL) {
+	smtpAdapter := adapters.NewSMTP()
+
+	createMessageUseCase := application.NewCreateMessageUsecase(conecctionMysql, webSocketAdapter, smtpAdapter)
 	createMessageController := controllers.NewCreateMessageController(createMessageUseCase)
 
-	routers.MessageRouter(r,  webSocketAdapter, createMessageController)
+	routers.MessageRouter(r, webSocketAdapter, createMessageController)
 }

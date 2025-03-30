@@ -12,31 +12,32 @@ import (
 )
 
 func main() {
-    err := godotenv.Load()
-    if err != nil {
-        log.Fatalf("Error loading .env file")
-    }
 
-    r := gin.Default()
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 
-    r.Use(cors.New(cors.Config{
-        AllowOrigins: []string{"*"},
-        AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
-        AllowHeaders: []string{"Content-Type", "Authorization"},
-        ExposeHeaders: []string{"Authorization"},
-        MaxAge: 12 * time.Hour,
-    }))
+	r := gin.Default()
 
-    mysqlAdapter, err := adapters.NewMySQL()
-    if err != nil {
-        log.Fatalf("Error al conectar con MySQL: %v", err)
-    }
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:  []string{"*"},
+		AllowMethods:  []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:  []string{"Content-Type", "Authorization"},
+		ExposeHeaders: []string{"Authorization"},
+		MaxAge:        12 * time.Hour,
+	}))
 
-    webSocketAdapter := adapters.NewWebSocketAdapter()
+	mysqlAdapter, err := adapters.NewMySQL()
+	if err != nil {
+		log.Fatalf("Error al conectar con MySQL: %v", err)
+	}
 
-    dependenciesMessage.InitMessages(r, webSocketAdapter, mysqlAdapter)
+	webSocketAdapter := adapters.NewWebSocketAdapter()
 
-    if err := r.Run(":4000"); err != nil {
-        panic(err)
-    }
+	dependenciesMessage.InitMessages(r, webSocketAdapter, mysqlAdapter)
+
+	if err := r.Run(":4000"); err != nil {
+		panic(err)
+	}
 }

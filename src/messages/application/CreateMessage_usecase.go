@@ -1,28 +1,22 @@
 package application
 
 import (
-	"sync"
-	"time"
-
 	repository "apimessages/src/messages/application/reposository"
 	"apimessages/src/messages/domain/entities"
 	"apimessages/src/messages/domain/repositories"
-
 )
-
-var erroresEnviados = make(map[entities.Message]time.Time)
-var mutex sync.Mutex 
 
 type CreateMessageUsecase struct {
 	MessageRepository repositories.IMessage
 	WebSocketService  repository.WebSocketServer
-	SMTPRepository repository.ISmtp
+	SMTPRepository    repository.ISmtp
 }
 
-func NewCreateMessageUsecase(messageRepository repositories.IMessage, wsService repository.WebSocketServer) *CreateMessageUsecase {
+func NewCreateMessageUsecase(messageRepository repositories.IMessage, wsService repository.WebSocketServer, smtpRepository repository.ISmtp) *CreateMessageUsecase {
 	return &CreateMessageUsecase{
 		MessageRepository: messageRepository,
 		WebSocketService:  wsService,
+		SMTPRepository:    smtpRepository,
 	}
 }
 
@@ -33,25 +27,29 @@ func (uc *CreateMessageUsecase) Execute(message entities.Message) (*entities.Mes
 	}
 
 	uc.WebSocketService.Broadcast(*humidityReceive)
-   gmail, err:= uc.MessageRepository.GetGmailByUserName(message.User)
-    if err != nil {
+
+	gmail, err := uc.MessageRepository.GetGmailByUserName(message.User)
+	if err != nil {
 		return nil, err
 	}
+
 	if message.Type == "humidity" {
-		if(message.Text == ""){
+		if message.Text == "Baja humedad" {
 			err := uc.SMTPRepository.CaseError(message, gmail)
 			if err != nil {
 				return nil, err
 			}
 		}
 	}
-    if(message.Type == "temperature"){
-		if(message.Quantity < 10 || message.Quantity > 30){
+
+	if message.Type == "temperature" {
+		if message.Quantity < 10 || message.Quantity > 30 {
 			err := uc.SMTPRepository.CaseError(message, gmail)
-            if err != nil {
-                return nil, err
-            }
-        }
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
+
 	return humidityReceive, nil
 }
