@@ -183,11 +183,9 @@ func SendGmail(errorMessage string, gmail string) error {
 </body>
 </html>`
 
-	// Reemplazar variables en la plantilla
 	htmlBody = strings.ReplaceAll(htmlBody, "{{errorMessage}}", errorMessage)
 	htmlBody = strings.ReplaceAll(htmlBody, "{{timestamp}}", timestamp)
 
-	// Set alternative bodies - both HTML and plain text
 	m.SetBody("text/plain", "Error crítico en el sistema: "+errorMessage)
 	m.AddAlternative("text/html", htmlBody)
 

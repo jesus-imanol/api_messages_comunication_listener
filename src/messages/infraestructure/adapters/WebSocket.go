@@ -15,14 +15,12 @@ type WebSocketAdapter struct {
     mu      sync.Mutex
 }
 
-// Constructor
 func NewWebSocketAdapter() *WebSocketAdapter {
     return &WebSocketAdapter{
         clients: make(map[*websocket.Conn]string),
     }
 }
 
-// Manejo de conexión WebSocket
 func (ws *WebSocketAdapter) HandleConnection(conn *websocket.Conn, username string) {
     ws.mu.Lock()
     ws.clients[conn] = username
@@ -46,8 +44,8 @@ func (ws *WebSocketAdapter) HandleConnection(conn *websocket.Conn, username stri
 
         if err := conn.WriteMessage(websocket.TextMessage, []byte("pong")); err != nil {
             log.Printf("Error al enviar pong a usuario %s: %v", username, err)
-            break
-        }
+          break
+        }  
     }
 }
 

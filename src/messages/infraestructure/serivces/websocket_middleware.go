@@ -1,4 +1,4 @@
-package middlewares
+package services
 
 import (
     "apimessages/src/messages/infraestructure/adapters"
@@ -23,7 +23,7 @@ func WebSocketMiddleware(webSocketAdapter *adapters.WebSocketAdapter) gin.Handle
             return
         }
 
-        username := c.Query("user") // Obtener el identificador del usuario
+        username := c.Query("user") 
         if username == "" {
             log.Println("Falta el identificador de usuario")
             conn.Close()

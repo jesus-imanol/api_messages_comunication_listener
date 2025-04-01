@@ -20,8 +20,8 @@ func NewMySQL() (*MySQL, error) {
 }
 
 func (mysql *MySQL) CreateMessage(humidity entities.Message) (*entities.Message, error) {
-	query := `INSERT INTO messages (type, quantity, text) VALUES (?, ?, ?)`
-	result, err := mysql.conn.ExecutePreparedQuery(query, humidity.Type, humidity.Quantity, humidity.Text)
+	query := `INSERT INTO messages (type, quantity, text, created_ate) VALUES (?, ?, ?, ?)`
+	result, err := mysql.conn.ExecutePreparedQuery(query, humidity.Type, humidity.Quantity, humidity.Text, humidity.CreatedAt)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
