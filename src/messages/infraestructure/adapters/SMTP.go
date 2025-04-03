@@ -62,10 +62,9 @@ func SendGmail(errorMessage string, gmail string) error {
 	m.SetHeader("To", gmail)
 	m.SetHeader("Subject", "1 mensaje nuevo para ti")
 
-	// Timestamp para la plantilla
 	timestamp := time.Now().Format("02/01/2006 15:04:05")
 
-	// HTML Template para el email estilo Fiverr
+
 	htmlBody := `<!DOCTYPE html>
 <html lang="es">
 <head>

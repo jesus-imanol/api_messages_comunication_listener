@@ -19,8 +19,11 @@ func InitMessages(r *gin.Engine, webSocketAdapter *adapters.WebSocketAdapter, co
         log.Fatalf("Error loading.env file")
     }
 	key := os.Getenv("SECRET_KEY")
+	rabbitMQAdapter := adapters.NewRabbitMQPublisher()
+	initFertlizerUseCaese := application.NewInitFertilizer(rabbitMQAdapter)
+	initFertilizerController := controllers.NewInitFertilizerController(initFertlizerUseCaese)
 	createMessageUseCase := application.NewCreateMessageUsecase(conecctionMysql, webSocketAdapter, smtpAdapter)
 	createMessageController := controllers.NewCreateMessageController(createMessageUseCase)
 
-	routers.MessageRouter(r, key, webSocketAdapter, createMessageController)
+	routers.MessageRouter(r, key, webSocketAdapter, createMessageController, initFertilizerController)
 }

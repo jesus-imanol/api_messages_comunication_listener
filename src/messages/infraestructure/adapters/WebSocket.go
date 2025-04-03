@@ -1,4 +1,4 @@
-// WebSocketAdapter - Manejo de conexiones WebSocket
+
 package adapters
 
 import (
@@ -11,24 +11,24 @@ import (
 )
 
 type WebSocketAdapter struct {
-    clients map[*websocket.Conn]string 
+    clients map[string]*websocket.Conn 
     mu      sync.Mutex
 }
 
 func NewWebSocketAdapter() *WebSocketAdapter {
     return &WebSocketAdapter{
-        clients: make(map[*websocket.Conn]string),
+        clients: make(map[string]*websocket.Conn), 
     }
 }
 
 func (ws *WebSocketAdapter) HandleConnection(conn *websocket.Conn, username string) {
     ws.mu.Lock()
-    ws.clients[conn] = username
+    ws.clients[username] = conn 
     ws.mu.Unlock()
 
     defer func() {
         ws.mu.Lock()
-        delete(ws.clients, conn) 
+        delete(ws.clients, username) 
         ws.mu.Unlock()
         conn.Close()
     }()
@@ -40,12 +40,12 @@ func (ws *WebSocketAdapter) HandleConnection(conn *websocket.Conn, username stri
             break
         }
 
-        log.Printf("Mensaje recibido de usuario %s: %s", username, msg)
+        log.Printf("Mensaje recibido de usuario %s: %s", username, string(msg))
 
         if err := conn.WriteMessage(websocket.TextMessage, []byte("pong")); err != nil {
             log.Printf("Error al enviar pong a usuario %s: %v", username, err)
-          break
-        }  
+            break
+        }
     }
 }
 
@@ -59,13 +59,13 @@ func (ws *WebSocketAdapter) Broadcast(message entities.Message) {
         return
     }
 
-    for conn, userID := range ws.clients {
-        if userID == message.User { 
+    for username, conn := range ws.clients {
+        if username == message.User { 
             err := conn.WriteMessage(websocket.TextMessage, messageData)
             if err != nil {
-                log.Printf("Error al enviar mensaje a usuario %s: %v", userID, err)
+                log.Printf("Error al enviar mensaje a usuario %s: %v", username, err)
                 conn.Close()
-                delete(ws.clients, conn)
+                delete(ws.clients, username) 
             }
         }
     }
