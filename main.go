@@ -37,12 +37,6 @@ func main() {
 	webSocketAdapter := adapters.NewWebSocketAdapter()
     core.InitRabbitMQConnection()
 	dependenciesMessage.InitMessages(r, webSocketAdapter, mysqlAdapter)
-<<<<<<< HEAD
-    
-=======
-
-
->>>>>>> e4fa62f (function command on bomb water)
 	if err := r.Run(":4000"); err != nil {
 		panic(err)
 	}

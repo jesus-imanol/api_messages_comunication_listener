@@ -13,8 +13,13 @@ func MessageRouter(r *gin.Engine, key string, webSocketAdapter *adapters.WebSock
     protectedRouteConsumer := v1.Group("/consumer")
     protectedRouteConsumer.Use(services.RoleMiddleware(key, []string{"controller"}))
     protectedRouteConsumer.POST("/", createmessageController.CreateMessage)
+<<<<<<< HEAD
    // protectedRouteTwoUsers := v1.Group("/protected") 
    // protectedRouteTwoUsers.Use(services.RoleMiddleware(key, []string{"normaluser", "premiumuser"}))
+=======
+    protectedRouteTwoUsers := v1.Group("/protected") 
+    protectedRouteTwoUsers.Use(services.RoleMiddleware(key, []string{"normaluser", "premiumuser"}))
+>>>>>>> af7d687 (route protected)
     v1.GET("/ws", services.WebSocketMiddleware(webSocketAdapter))
     v1.POST("/messageFertilizer", initFertilizerController.Run)
 }
