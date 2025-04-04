@@ -1,6 +1,7 @@
 package main
 
 import (
+	"apimessages/src/core"
 	"apimessages/src/messages/infraestructure/adapters"
 	dependenciesMessage "apimessages/src/messages/infraestructure/dependenciesMessage"
 	"log"
@@ -34,9 +35,9 @@ func main() {
 	}
 
 	webSocketAdapter := adapters.NewWebSocketAdapter()
-
+    core.InitRabbitMQConnection()
 	dependenciesMessage.InitMessages(r, webSocketAdapter, mysqlAdapter)
-
+    
 	if err := r.Run(":4000"); err != nil {
 		panic(err)
 	}
