@@ -34,7 +34,7 @@ func (uc *CreateMessageUsecase) Execute(message entities.Message) (*entities.Mes
 	}
 
 	if message.Type == "humidity" {
-		if message.Text == "Baja humedad" {
+		if message.Text == "¡ALERTA! Suelo seco"{
 			err := uc.SMTPRepository.CaseError(message, gmail)
 			if err != nil {
 				return nil, err
@@ -43,7 +43,7 @@ func (uc *CreateMessageUsecase) Execute(message entities.Message) (*entities.Mes
 	}
 
 	if message.Type == "temperature" {
-		if message.Quantity < 10 || message.Quantity > 30 {
+		if message.Text == "¡ALERTA! Temperatura baja" || message.Text == "¡ALERTA! Temperatura alta" {
 			err := uc.SMTPRepository.CaseError(message, gmail)
 			if err != nil {
 				return nil, err
