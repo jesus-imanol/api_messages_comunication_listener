@@ -6,7 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
-
+	"errors"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -17,24 +17,30 @@ type RabbitMQPublisher struct {
 // Constructor para inyectar la conexión de RabbitMQ
 func NewRabbitMQPublisher() *RabbitMQPublisher {
     conn := core.GetRabbitMQConnection()
+    if conn == nil {
+        log.Println("Error: RabbitMQ connection is nil")
+    }
     return &RabbitMQPublisher{conn}
 }
 
-func (p *RabbitMQPublisher) InitFertilizer(ctx context.Context, message entities.MessageFertilizer) ( *entities.MessageFertilizer, error) {
+func (p *RabbitMQPublisher) InitFertilizer(ctx context.Context, message entities.MessageFertilizer) (*entities.MessageFertilizer, error) {
+    if p.conn == nil {
+        return nil, errors.New("RabbitMQ connection is not established")
+    }
+    
     ch, err := p.conn.Channel()
     if err != nil {
         return nil, err
     }
     defer ch.Close()
-
+    
     body, err := json.Marshal(message)
     if err != nil {
         return nil, err
     }
-
-
+    
     err = ch.PublishWithContext(ctx,
-        "amqp.topic",  // nombre del intercambio
+        "amq.topic",  // nombre del intercambio
         "irrigation.control",  // clave de enrutamiento
         false,         // mandatory
         false,         // immediate
@@ -45,7 +51,7 @@ func (p *RabbitMQPublisher) InitFertilizer(ctx context.Context, message entities
     if err != nil {
         return nil, err
     }
-
+    
     log.Printf("[x] Sent: %s", body)
     return &message, nil
 }
